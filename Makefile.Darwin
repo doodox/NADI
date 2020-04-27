@@ -1,0 +1,45 @@
+CC = clang
+CFLAGS = -g -Wall
+LFLAGS = -shared -fpic
+INC = -I/usr/local/homebrew/include
+LIB = -L/usr/local/homebrew/lib
+
+providers: nadi.dylib nadi-noop.dylib nadi-prompt-secret.dylib nadi-prompt-cons.dylib nadi-env.dylib nadi-txt.dylib nadi-conf.dylib nadi-cache.dylib
+	ls -1F *.dylib
+
+# demo program
+
+demo: demo.o nadi.dylib
+	$(CC) $(CFLAGS) -o $@ $^
+
+# providers
+
+nadi-noop.dylib: nadi.dylib
+	cp $^ $@
+
+nadi.dylib: nadi-noop.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-prompt-secret.dylib: nadi-prompt-secret.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-prompt-cons.dylib: nadi-prompt-cons.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-env.dylib: nadi-env.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-txt.dylib: nadi-txt.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-conf.dylib: nadi-conf.o nadi-base.o
+	$(CC) $(LFLAGS) $(LIB) $^ -o $@ -lconfuse
+
+nadi-cache.dylib: nadi-cache.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+%.o: %.c nadi-base.h nadi-spi.h
+	$(CC) $(CFLAGS) $(INC) -c $<
+
+clean:
+	rm -f demo *.o *.dylib

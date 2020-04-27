@@ -1,0 +1,6 @@
+#!/bin/sh
+NADISPI=nadi.dylib
+NADILIB=nadi-$1.dylib
+
+rm $NADISPI
+ln -s $NADILIB $NADISPI
