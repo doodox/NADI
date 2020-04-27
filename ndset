@@ -2,5 +2,5 @@
 NADISPI=nadi.dylib
 NADILIB=nadi-$1.dylib
 
-rm $NADISPI
+rm -f $NADISPI
 ln -s $NADILIB $NADISPI
