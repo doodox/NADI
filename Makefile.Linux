@@ -1,0 +1,45 @@
+CC = gcc
+CFLAGS = -g -Wall -fPIC
+LFLAGS = -shared -fPIC
+INC = -I.
+LIB = -L.
+
+providers: nadi.so nadi-noop.so nadi-prompt-secret.so nadi-prompt-cons.so nadi-env.so nadi-txt.so nadi-conf.so nadi-cache.so
+	ls -1F *.so
+
+# demo program
+
+demo: demo.o nadi.so
+	$(CC) $(CFLAGS) -o $@ $^
+
+# providers
+
+nadi-noop.so: nadi.so
+	cp $^ $@
+
+nadi.so: nadi-noop.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-prompt-secret.so: nadi-prompt-secret.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-prompt-cons.so: nadi-prompt-cons.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-env.so: nadi-env.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-txt.so: nadi-txt.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+nadi-conf.so: nadi-conf.o nadi-base.o
+	$(CC) $(LFLAGS) $(LIB) $^ -o $@ -lconfuse
+
+nadi-cache.so: nadi-cache.o nadi-base.o
+	$(CC) $(LFLAGS) $^ -o $@
+
+%.o: %.c nadi-base.h nadi-spi.h
+	$(CC) $(CFLAGS) $(INC) -c $<
+
+clean:
+	rm -f demo *.o *.so

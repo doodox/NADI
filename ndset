@@ -1,6 +1,9 @@
 #!/bin/sh
-NADISPI=nadi.dylib
-NADILIB=nadi-$1.dylib
-
+case $(uname) in
+  Linux)  DLEXT=so    ;;
+  Darwin) DLEXT=dylib ;;
+esac
+NADISPI=nadi.$DLEXT
+NADILIB=nadi-$1.$DLEXT
 rm -f $NADISPI
 ln -s $NADILIB $NADISPI
