@@ -1,0 +1,6 @@
+*.o
+*.so
+*.dylib
+demo
+Makefile
+nadi-cache-*.txt
